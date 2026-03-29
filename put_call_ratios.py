@@ -4,6 +4,7 @@ import json
 from dataclasses import dataclass
 from datetime import date
 from typing import Any
+import logging
 
 import pandas as pd
 import requests
@@ -86,9 +87,9 @@ def get_put_call_ratios(fetch_date: date) -> PutCallRatios | None:
     try:
         url_with_date = URL.replace("DATE", fetch_date.isoformat())
         resp = requests.get(url_with_date)
-        print(f"fetch {url_with_date} -> status={resp.status_code}")
+        logging.debug(f"fetch {url_with_date} -> status={resp.status_code}")
         if resp.status_code == 200:
             return PutCallRatios.from_json(json.loads(resp.content))
-    except Exception as e:
-        print(e)
+    except:
+        logging.exception("Failed to fetch put/call ratios")
     return None
